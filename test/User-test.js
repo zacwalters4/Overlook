@@ -24,4 +24,12 @@ describe('User', () => {
   it('should be have an array of the user\'s bookings', () => {
     expect(user.bookings).to.deep.equal([{"id":"5fwrgu4i7k55hl6t8","userID":1,"date":"2022/02/05","roomNumber":12}, {"id":"5fwrgu4i7k55hl6x8","userID":1,"date":"2023/01/11","roomNumber":20}])
   })
+
+  it('should be able to return an array of the user\'s past bookings', () => {
+    expect(user.getPastBookings()).to.deep.equal([{"id":"5fwrgu4i7k55hl6t8","userID":1,"date":"2022/02/05","roomNumber":12}])
+  })
+
+  it('should be able to return an array of the user\'s upcoming bookings', () => {
+    expect(user.getUpcomingBookings()).to.deep.equal([{"id":"5fwrgu4i7k55hl6x8","userID":1,"date":"2023/01/11","roomNumber":20}])
+  })
 })
