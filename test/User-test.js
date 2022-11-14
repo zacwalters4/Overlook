@@ -2,6 +2,7 @@ import chai from 'chai'
 const expect = chai.expect
 import { userData, bookingsData, roomsData } from '../data/testData'
 import User from '../src/classes/User'
+import Booking from '../src/classes/Booking'
 
 describe('User', () => {
     let user
@@ -22,15 +23,15 @@ describe('User', () => {
   })
 
   it('should be have an array of the user\'s bookings', () => {
-    expect(user.bookings).to.deep.equal([{"id":"5fwrgu4i7k55hl6t8","userID":1,"date":"2022/02/05","roomNumber":1}, {"id":"5fwrgu4i7k55hl6x8","userID":1,"date":"2023/01/11","roomNumber":3}])
+    expect(user.bookings).to.deep.equal([{"id":"5fwrgu4i7k55hl6t8","userID":1,"date":"2022/02/05","roomNumber":1,"cost": 358.4}, {"id":"5fwrgu4i7k55hl6x8","userID":1,"date":"2023/01/11","roomNumber":3,"cost": 491.14}])
   })
 
   it('should be able to return an array of the user\'s past bookings', () => {
-    expect(user.getPastBookings()).to.deep.equal([{"id":"5fwrgu4i7k55hl6t8","userID":1,"date":"2022/02/05","roomNumber":1}])
+    expect(user.getPastBookings()).to.deep.equal([{"id":"5fwrgu4i7k55hl6t8","userID":1,"date":"2022/02/05","roomNumber":1,"cost": 358.4}])
   })
 
   it('should be able to return an array of the user\'s upcoming bookings', () => {
-    expect(user.getUpcomingBookings()).to.deep.equal([{"id":"5fwrgu4i7k55hl6x8","userID":1,"date":"2023/01/11","roomNumber":3}])
+    expect(user.getUpcomingBookings()).to.deep.equal([{"id":"5fwrgu4i7k55hl6x8","userID":1,"date":"2023/01/11","roomNumber":3,"cost": 491.14}])
   })
 
   it('should be have a total amount spent', () => {

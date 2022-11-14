@@ -1,13 +1,19 @@
+import Booking from './Booking'
+
 class User {
     constructor(user, allBookings, allRooms) {
         this.id = user.id
         this.name = user.name
-        this.bookings = this.getUserBookings(allBookings)
+        this.bookings = this.getUserBookings(allBookings, allRooms)
         this.totalSpent = this.getTotalSpent(allRooms)
     }
 
-    getUserBookings(allBookings) {
+    getUserBookings(allBookings, allRooms) {
         const userBookings = allBookings.filter(booking => booking.userID === this.id)
+        return userBookings.map(booking => {
+            return new Booking(booking, allRooms)
+        })
+        console.log(userBookings)
         return userBookings
     }
 
@@ -30,10 +36,10 @@ class User {
     getTotalSpent(allRooms) {
         let totalSpent = 0
         this.bookings.forEach(booking => {
-            totalSpent += allRooms[booking.roomNumber - 1].costPerNight
+            totalSpent += booking.cost
         })
         return Math.trunc(totalSpent*100)/100
     }
 }
 
-module.exports = User
+export default User
