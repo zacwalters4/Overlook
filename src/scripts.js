@@ -1,11 +1,29 @@
-// This is the JavaScript entry file - your code begins here
-// Do not delete or rename this file ********
-
-// An example of how you tell webpack to use a CSS (SCSS) file
-import './css/styles.css';
-
-// An example of how you tell webpack to use an image (also need to link to it in the index.html)
+import './apiCalls'
+import { getData } from './apiCalls'
+import './css/styles.css'
 import './images/turing-logo.png'
 
 
-console.log('This is the JavaScript entry file - your code begins here.');
+// DATA MODEL
+
+const allCustomersURL = 'http://localhost:3001/api/v1/customers'
+const currentCustomerURL = "http://localhost:3001/api/v1/customers/1"
+
+let customer
+
+function initializeData(url) {
+    Promise.all([getData(url)])
+        .then(data => {
+            customer = data
+            console.log(customer)
+        })
+        .catch(error => {
+             console.log("Error: ", error)
+            })
+}
+
+// EVENT LISTENERS
+
+window.addEventListener('load', () => {
+    initializeData(currentCustomer  URL)
+})
