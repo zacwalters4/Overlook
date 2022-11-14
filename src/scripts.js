@@ -18,6 +18,8 @@ let user
 
 // QUERY SELECTORS
 
+const pastBookingsContainer = document.querySelector('.past-bookings')
+
 // UTILITY FUNCTIONS
 
 function initializeData(customerURL, bookingsURL, roomsURL) {
@@ -38,12 +40,12 @@ function initializeData(customerURL, bookingsURL, roomsURL) {
 
 function initializePage() {
     initializeUser()
+    updatePastBookings()
 }
 
 function initializeUser() {
     user = new User(customer, bookings, rooms)
     console.log(user)
-
 }
 
 // EVENT LISTENERS
@@ -55,5 +57,9 @@ window.addEventListener('load', () => {
 // DOM UPDATING
 
 function updatePastBookings() {
-
+    user.getPastBookings().forEach(booking => {
+        pastBookingsContainer.innerHTML += `
+        <h1>Date: ${booking.date}</h1>
+        `
+    })
 }
