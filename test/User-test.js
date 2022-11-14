@@ -2,7 +2,6 @@ import chai from 'chai'
 const expect = chai.expect
 import { userData, bookingsData, roomsData } from '../data/testData'
 import User from '../src/classes/User'
-import Booking from '../src/classes/Booking'
 
 describe('User', () => {
     let user

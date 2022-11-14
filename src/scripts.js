@@ -18,7 +18,9 @@ let user
 
 // QUERY SELECTORS
 
-const pastBookingsContainer = document.querySelector('.past-bookings')
+const bookingsContainer = document.querySelector('.bookings-container')
+const upcomingButton = document.querySelector('.upcoming-button')
+const pastButton = document.querySelector('.past-button')
 
 // UTILITY FUNCTIONS
 
@@ -28,9 +30,6 @@ function initializeData(customerURL, bookingsURL, roomsURL) {
             customer = data[0]
             bookings = data[1].bookings
             rooms = data[2].rooms
-            // console.log(customer)
-            // console.log(bookings)
-            // console.log(rooms)
             initializePage()
         })
         .catch(error => {
@@ -40,7 +39,7 @@ function initializeData(customerURL, bookingsURL, roomsURL) {
 
 function initializePage() {
     initializeUser()
-    updatePastBookings()
+    updateUpcomingBookings()
 }
 
 function initializeUser() {
@@ -54,12 +53,40 @@ window.addEventListener('load', () => {
     initializeData(currentCustomerURL, allBookingsURL, allRoomsURL)
 })
 
+upcomingButton.addEventListener('click', updateUpcomingBookings)
+pastButton.addEventListener('click', updatePastBookings)
 // DOM UPDATING
 
 function updatePastBookings() {
+    bookingsContainer.innerHTML = `
+    <div class="booking">
+        <h1>Past Bookings</h1>
+    </div>
+    `
     user.getPastBookings().forEach(booking => {
-        pastBookingsContainer.innerHTML += `
-        <h1>Date: ${booking.date}</h1>
+        bookingsContainer.innerHTML += `
+        <div class="booking">
+            <h1>Room ${booking.roomNumber} - ${booking.date}</h1>
+            <h1>Features</h1>
+            <h1>$${booking.cost} per night</h1>
+        </div>
+        `
+    })
+}
+
+function updateUpcomingBookings() {
+    bookingsContainer.innerHTML = `
+    <div class="booking">
+        <h1>Upcoming Bookings</h1>
+    </div>
+    `
+    user.getUpcomingBookings().forEach(booking => {
+        bookingsContainer.innerHTML += `
+        <div class="booking">
+            <h1>Room ${booking.roomNumber} - ${booking.date}</h1>
+            <h1>Features</h1>
+            <h1>$${booking.cost} per night</h1>
+        </div>
         `
     })
 }
