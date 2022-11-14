@@ -1,8 +1,9 @@
 class User {
-    constructor(user, allBookings) {
+    constructor(user, allBookings, roomsData) {
         this.id = user.id
         this.name = user.name
         this.bookings = this.getUserBookings(allBookings)
+        this.totalSpent = this.getTotalSpent(roomsData)
     }
 
     getUserBookings(allBookings) {
@@ -24,6 +25,14 @@ class User {
             return (bookingDate > Date.now())
         })
         return upcomingBookings
+    }
+
+    getTotalSpent(roomsData) {
+        let totalSpent = 0
+        this.bookings.forEach(booking => {
+            totalSpent += roomsData[booking.roomNumber - 1].costPerNight
+        })
+        return totalSpent
     }
 }
 
