@@ -1,9 +1,9 @@
 class User {
-    constructor(user, allBookings, roomsData) {
+    constructor(user, allBookings, allRooms) {
         this.id = user.id
         this.name = user.name
         this.bookings = this.getUserBookings(allBookings)
-        this.totalSpent = this.getTotalSpent(roomsData)
+        this.totalSpent = this.getTotalSpent(allRooms)
     }
 
     getUserBookings(allBookings) {
@@ -27,12 +27,12 @@ class User {
         return upcomingBookings
     }
 
-    getTotalSpent(roomsData) {
+    getTotalSpent(allRooms) {
         let totalSpent = 0
         this.bookings.forEach(booking => {
-            totalSpent += roomsData[booking.roomNumber - 1].costPerNight
+            totalSpent += allRooms[booking.roomNumber - 1].costPerNight
         })
-        return totalSpent
+        return Math.trunc(totalSpent*100)/100
     }
 }
 
