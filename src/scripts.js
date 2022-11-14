@@ -7,9 +7,10 @@ import './images/turing-logo.png'
 // DATA MODEL
 
 const allCustomersURL = 'http://localhost:3001/api/v1/customers'
-const currentCustomerURL = "http://localhost:3001/api/v1/customers/1"
+const currentCustomerURL = 'http://localhost:3001/api/v1/customers/1'
+const allBookingsURL = 'http://localhost:3001/api/v1/bookings'
 
-let customer
+let customer1
 
 function initializeData(url) {
     Promise.all([getData(url)])
@@ -25,5 +26,5 @@ function initializeData(url) {
 // EVENT LISTENERS
 
 window.addEventListener('load', () => {
-    initializeData(currentCustomer  URL)
+    initializeData(currentCustomerURL)
 })
