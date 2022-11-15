@@ -1,4 +1,4 @@
-const userData = {"id":1,"name":"Leatha Ullrich"}
+const userData = [{"id":1,"name":"Leatha Ullrich"},{"id":2,"name":"Rocio Schuster"},{"id":3,"name":"Kelvin Schiller"},{"id":4,"name":"Kennedi Emard"},{"id":5,"name":"Rhiannon Little"}]
 
 const bookingsData = [
 {"id":"5fwrgu4i7k55hl6sz","userID":9,"date":"2022/04/22","roomNumber":1},

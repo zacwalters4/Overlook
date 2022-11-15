@@ -4,20 +4,23 @@ import './css/styles.css'
 import './images/turing-logo.png'
 import User from '../src/classes/User'
 import Room from '../src/classes/Room'
+import Login from '../src/classes/Login'
 
 // DATA MODEL
 
 const allCustomersURL = 'http://localhost:3001/api/v1/customers'
-const currentCustomerURL = 'http://localhost:3001/api/v1/customers/1'
 const allBookingsURL = 'http://localhost:3001/api/v1/bookings'
 const allRoomsURL = 'http://localhost:3001/api/v1/rooms'
 
 let day, month, year
+let allCustomers
 let customer
 let bookings
 let rooms
 let allRooms
 let user
+let login
+let id
 
 // QUERY SELECTORS
 
@@ -33,20 +36,30 @@ const searchButton = document.querySelector('.search-button')
 const dateSelectContainer = document.querySelector('.date-select-container')
 const filterDropdown = document.getElementById('filter-dropdown')
 const filterContainer = document.querySelector('.filter-container')
+const usernameField = document.querySelector('.username-field')
+const passwordField = document.querySelector('.password-field')
+const loginButton = document.querySelector('.login-button')
+const passFailText = document.querySelector('.password-fail')
+const buttonContainer = document.querySelector('.button-container')
+const loginContainer = document.querySelector('.login-container')
 
 // UTILITY FUNCTIONS
 
-function initializeData(customerURL, bookingsURL, roomsURL) {
-    Promise.all([getData(customerURL),getData(bookingsURL),getData(roomsURL)])
+function initializeData(allCustomersURL, bookingsURL, roomsURL) {
+    Promise.all([getData(allCustomersURL),getData(bookingsURL),getData(roomsURL)])
         .then(data => {
-            customer = data[0]
+            allCustomers = data[0].customers
             bookings = data[1].bookings
             allRooms = data[2].rooms
-            initializePage()
+            initializeLogin()
         })
         .catch(error => {
              console.log("Error: ", error)
             })
+}
+
+function initializeLogin() {
+    login = new Login(allCustomers)
 }
 
 function initializePage() {
@@ -58,13 +71,16 @@ function initializePage() {
 }
 
 function initializeUser() {
-    user = new User(customer, bookings, rooms)
+    console.log(id)
+    console.log(allCustomers[id - 1], bookings, rooms)
+    user = new User(allCustomers[id - 1], bookings, rooms)
+    console.log(user)
 }
 
 // EVENT LISTENERS
 
 window.addEventListener('load', () => {
-    initializeData(currentCustomerURL, allBookingsURL, allRoomsURL)
+    initializeData(allCustomersURL, allBookingsURL, allRoomsURL)
 })
 
 bookingsContainer.addEventListener('click', event => {
@@ -78,12 +94,11 @@ bookingsContainer.addEventListener('click', event => {
 upcomingButton.addEventListener('click', updateUpcomingBookings)
 pastButton.addEventListener('click', updatePastBookings)
 newBookingButton.addEventListener('click', loadNewBookingPage)
-
 yearDropdown.addEventListener('change', fillDateDropdown)
 monthDropdown.addEventListener('change', fillDateDropdown)
 filterDropdown.addEventListener('change', filterRooms)
-
 searchButton.addEventListener('click', searchAvailableRooms)
+loginButton.addEventListener('click', attemptLogin)
 
 // DOM UPDATING
 
@@ -293,4 +308,17 @@ function fetchBookings() {
         initializePage()
       })
       .catch(err => console.log(err))
+  }
+
+  function attemptLogin() {
+    if(!login.checkLogin(usernameField.value, passwordField.value)) {
+        passFailText.innerText = 'We do not recognize your login credentials, please try again.'
+    } else {
+        passFailText.innerText = ''
+        console.log(5)
+        id = login.checkLogin(usernameField.value, passwordField.value)
+        initializePage()
+        loginContainer.classList.add('hidden')
+        buttonContainer.classList.remove('hidden')
+    }
   }
