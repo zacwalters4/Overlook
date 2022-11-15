@@ -17,10 +17,34 @@ body {
   margin-bottom: 5vh;
 }
 
+.login-container {
+  display: flex;
+  align-items: center;
+  width:60vw;
+}
+
+.login-container > input {
+  width: 10vw;
+  text-align: center;
+  height: 5vh;
+}
+
+.login-container > button {
+  background-color: rgba(128, 128, 128, 0.2);
+  width: 10vw;
+  height: 5vh;
+}
+
+.login-container > h1 {
+  font-size: 90%;
+  margin: auto;
+}
+
 .button-container {
   display: flex;
   width:60vw;
 }
+
 
 .button-container > button {
   background-color: rgba(128, 128, 128, 0.2);
