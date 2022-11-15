@@ -1,5 +1,5 @@
 import './apiCalls'
-import { getData } from './apiCalls'
+import { getData, postData } from './apiCalls'
 import './css/styles.css'
 import './images/turing-logo.png'
 import User from '../src/classes/User'
@@ -16,6 +16,7 @@ let day, month, year
 let customer
 let bookings
 let rooms
+let allRooms
 let user
 
 // QUERY SELECTORS
@@ -40,8 +41,7 @@ function initializeData(customerURL, bookingsURL, roomsURL) {
         .then(data => {
             customer = data[0]
             bookings = data[1].bookings
-            rooms = instantiateRooms(data[2].rooms, bookings)
-            console.log(rooms)
+            allRooms = data[2].rooms
             initializePage()
         })
         .catch(error => {
@@ -50,6 +50,7 @@ function initializeData(customerURL, bookingsURL, roomsURL) {
 }
 
 function initializePage() {
+    rooms = instantiateRooms(allRooms, bookings)
     initializeUser()
     updateUpcomingBookings()
     updateWelcomeMessage()
@@ -58,13 +59,20 @@ function initializePage() {
 
 function initializeUser() {
     user = new User(customer, bookings, rooms)
-    console.log(user)
 }
 
 // EVENT LISTENERS
 
 window.addEventListener('load', () => {
     initializeData(currentCustomerURL, allBookingsURL, allRoomsURL)
+})
+
+bookingsContainer.addEventListener('click', event => {
+    if(event.target.classList.value === 'new-booking-button') {
+        let newBooking = bookRoom(event)
+        postData(newBooking, allBookingsURL)
+            .then(() => fetchBookings())
+    }
 })
 
 upcomingButton.addEventListener('click', updateUpcomingBookings)
@@ -76,6 +84,7 @@ monthDropdown.addEventListener('change', fillDateDropdown)
 filterDropdown.addEventListener('change', filterRooms)
 
 searchButton.addEventListener('click', searchAvailableRooms)
+
 // DOM UPDATING
 
 function updateWelcomeMessage() {
@@ -97,8 +106,7 @@ function updatePastBookings() {
             </div>
         `
     })
-    dateSelectContainer.classList.add('hidden')
-    filterContainer.classList.add('hidden')
+    hideNewBookingElements()
 }
 
 function updateUpcomingBookings() {
@@ -116,13 +124,19 @@ function updateUpcomingBookings() {
             </div>
         `
     })
+    hideNewBookingElements()
+}
+
+function hideNewBookingElements() {
     dateSelectContainer.classList.add('hidden')
     filterContainer.classList.add('hidden')
+    bookingsContainer.classList.remove('new')
 }
 
 function loadNewBookingPage() {
     dateSelectContainer.classList.remove('hidden')
     filterContainer.classList.remove('hidden')
+    bookingsContainer.classList.add('new')
     bookingsContainer.innerHTML = `
         <div class="booking">
             <h1>Available Rooms</h1>
@@ -189,23 +203,30 @@ function displayAvailableRooms(availableRooms) {
             <h1>Available Rooms for ${year}/${month + 1}/${day}</h1>
         </div>
     `
-    console.log(typeof availableRooms)
     if(typeof availableRooms === 'string') {
         bookingsContainer.innerHTML += `
         <div class="booking">
-            <h1>Sorry, you can not book a room in the past!</h1>
+            <h1>You can not book a room in the past!</h1>
         </div>
     `
-    } else {
+    } else if(availableRooms[0]) {
         availableRooms.forEach(room => {
             bookingsContainer.innerHTML += `
-                <div class="booking">
+                <div class="booking new">
                     <h1>Room ${room.number} - ${room.roomType}</h1>
                     <h1>${room.numBeds} ${room.bedSize} beds</h1>
                     <h1>$${room.costPerNight} per night</h1>
+                    <button class="new-booking-button" id="${room.number}">Book This Room</button>
                 </div>
             `
         })
+    }
+    else {
+        bookingsContainer.innerHTML += `
+        <div class="booking">
+            <h1>Our apologies! All of our rooms are full on this date.</h1>
+        </div>
+    `
     }
 }
 
@@ -248,3 +269,28 @@ function filterRooms() {
     })
     displayAvailableRooms(filteredRooms)
 }
+function bookRoom(event) {
+    let userID = user.id
+    let date = `${year}/${month + 1}/${day}`
+    let roomNumber = parseInt(event.target.id)
+    alert(`You booked room ${roomNumber} for ${date}!`)
+    return buildPost(userID, date, roomNumber)
+}
+
+function buildPost(userID, date, roomNumber) {
+    return {
+        userID: userID,
+        date: date,
+        roomNumber: roomNumber
+    }
+}
+
+function fetchBookings() {
+    fetch(allBookingsURL)
+      .then(response => response.json())
+      .then(data => bookings = data.bookings)
+      .then(() => {
+        initializePage()
+      })
+      .catch(err => console.log(err))
+  }

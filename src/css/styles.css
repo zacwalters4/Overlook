@@ -70,9 +70,13 @@ select {
 
 .booking > h1 {
 width: 30%;
-flex-grow: 1;
 margin-left: 3%;
 font-size: 100%;
+}
+
+.new > h1 {
+  width: 25%;
+  font-size: 90%;
 }
 
 .hidden {
