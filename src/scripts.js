@@ -93,13 +93,13 @@ function updateWelcomeMessage() {
 
 function updatePastBookings() {
     bookingsContainer.innerHTML = `
-        <div class="booking">
+        <div tabindex="0" class="booking">
             <h1>Past Bookings</h1>
         </div>
     `
     user.getPastBookings().forEach(booking => {
         bookingsContainer.innerHTML += `
-            <div class="booking">
+            <div tabindex="0" class="booking">
                 <h1>Room ${booking.roomNumber} - ${booking.date}</h1>
                 <h1>${booking.roomType}</h1>
                 <h1>$${booking.cost} per night</h1>
@@ -111,13 +111,13 @@ function updatePastBookings() {
 
 function updateUpcomingBookings() {
     bookingsContainer.innerHTML = `
-        <div class="booking">
+        <div tabindex="0" class="booking">
             <h1>Upcoming Bookings</h1>
         </div>
     `
     user.getUpcomingBookings().forEach(booking => {
         bookingsContainer.innerHTML += `
-            <div class="booking">
+            <div tabindex="0" class="booking">
                 <h1>Room ${booking.roomNumber} - ${booking.date}</h1>
                 <h1>${booking.roomType}</h1>
                 <h1>$${booking.cost} per night</h1>
@@ -199,20 +199,20 @@ function searchAvailableRooms() {
 
 function displayAvailableRooms(availableRooms) {
     bookingsContainer.innerHTML = `
-        <div class="booking">
+        <div tabindex="0" class="booking">
             <h1>Available Rooms for ${year}/${month + 1}/${day}</h1>
         </div>
     `
     if(typeof availableRooms === 'string') {
         bookingsContainer.innerHTML += `
-        <div class="booking">
+        <div tabindex="0" class="booking">
             <h1>You can not book a room in the past!</h1>
         </div>
     `
     } else if(availableRooms[0]) {
         availableRooms.forEach(room => {
             bookingsContainer.innerHTML += `
-                <div class="booking new">
+                <div tabindex="0" class="booking new">
                     <h1>Room ${room.number} - ${room.roomType}</h1>
                     <h1>${room.numBeds} ${room.bedSize} beds</h1>
                     <h1>$${room.costPerNight} per night</h1>
