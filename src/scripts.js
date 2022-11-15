@@ -68,6 +68,7 @@ newBookingButton.addEventListener('click', loadNewBookingPage)
 
 yearDropdown.addEventListener('change', fillDateDropdown)
 monthDropdown.addEventListener('change', fillDateDropdown)
+searchButton.addEventListener('click', searchAvailableRooms)
 // DOM UPDATING
 
 function updateWelcomeMessage() {
@@ -76,17 +77,17 @@ function updateWelcomeMessage() {
 
 function updatePastBookings() {
     bookingsContainer.innerHTML = `
-    <div class="booking">
-        <h1>Past Bookings</h1>
-    </div>
+        <div class="booking">
+            <h1>Past Bookings</h1>
+        </div>
     `
     user.getPastBookings().forEach(booking => {
         bookingsContainer.innerHTML += `
-        <div class="booking">
-            <h1>Room ${booking.roomNumber} - ${booking.date}</h1>
-            <h1>${booking.roomType}</h1>
-            <h1>$${booking.cost} per night</h1>
-        </div>
+            <div class="booking">
+                <h1>Room ${booking.roomNumber} - ${booking.date}</h1>
+                <h1>${booking.roomType}</h1>
+                <h1>$${booking.cost} per night</h1>
+            </div>
         `
     })
     dateSelectContainer.classList.add('hidden')
@@ -94,17 +95,17 @@ function updatePastBookings() {
 
 function updateUpcomingBookings() {
     bookingsContainer.innerHTML = `
-    <div class="booking">
-        <h1>Upcoming Bookings</h1>
-    </div>
+        <div class="booking">
+            <h1>Upcoming Bookings</h1>
+        </div>
     `
     user.getUpcomingBookings().forEach(booking => {
         bookingsContainer.innerHTML += `
-        <div class="booking">
-            <h1>Room ${booking.roomNumber} - ${booking.date}</h1>
-            <h1>${booking.roomType}</h1>
-            <h1>$${booking.cost} per night</h1>
-        </div>
+            <div class="booking">
+                <h1>Room ${booking.roomNumber} - ${booking.date}</h1>
+                <h1>${booking.roomType}</h1>
+                <h1>$${booking.cost} per night</h1>
+            </div>
         `
     })
     dateSelectContainer.classList.add('hidden')
@@ -112,7 +113,12 @@ function updateUpcomingBookings() {
 
 function loadNewBookingPage() {
     dateSelectContainer.classList.remove('hidden')
-    bookingsContainer.innerHTML = ''
+    bookingsContainer.innerHTML = `
+        <div class="booking">
+            <h1>Available Rooms</h1>
+        </div>
+    `
+    fillDropdowns()
 }
 
 function fillDropdowns() {
@@ -155,4 +161,48 @@ function fillDateDropdown() {
         option.value = i
         dateDropdown.append(option)
     }
+}
+
+function searchAvailableRooms() {
+    let day, month, year
+    day = dateDropdown.value
+    month = monthDropdown.value
+    year = yearDropdown.value
+    let dateInput = getDateInput(day, month, year)
+    checkRoomAvailability(dateInput)
+    bookingsContainer.innerHTML = `
+        <div class="booking">
+            <h1>Available Rooms for ${year}/${month + 1}/${day}</h1>
+        </div>
+    `
+    
+}
+
+function displayAvailableRooms() {
+    availableRooms.forEach(room => {
+        bookingsContainer.innerHTML += `
+            <div class="booking">
+                <h1>Room ${room.number} - ${room.roomType}</h1>
+                <h1>${room.numBeds} ${room.bedSize} beds</h1>
+                <h1>$${room.costPerNight} per night</h1>
+            </div>
+        `
+    })
+}
+
+function getDateInput(day, month, year) {
+    const dateInput = new Date(year, month, day)
+    console.log(dateInput)
+    return dateInput
+}
+
+function checkRoomAvailability(date) {
+    const dateBookings = bookings.filter(booking => {
+        let bookingDate = new Date(booking.date)
+        return bookingDate.getTime() === date.getTime()
+    })
+    console.log(dateBookings)
+
+    
+
 }
