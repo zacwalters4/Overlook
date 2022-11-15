@@ -5,7 +5,8 @@ class Booking {
         this.date = booking.date
         this.roomNumber = booking.roomNumber
         this.cost = allRooms[booking.roomNumber - 1].costPerNight
+        this.roomType = allRooms[booking.roomNumber -1].roomType
     }
 }
 
-module.exports = Booking
+export default Booking

@@ -4,13 +4,25 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Webpack Starter Kit</title>
+  <title>Overlook</title>
 </head>
 <body>
-  <div class="past-bookings">
-    <div class="booking"></div>
+  <h1 class="welcome-message">Hello</h1>
+  <div class="button-container">
+    <button class="upcoming-button">Upcoming Bookings</button>
+    <button class="past-button">Past Bookings</button>
+    <button class="new-button">New Booking</button>
+    <div class="date-select-container hidden">
+      <h1>Select a Date:</h1>
+      <div class="dropdown-container">
+        <select id="year-dropdown"></select>
+        <select id="month-dropdown"></select>
+        <select id="date-dropdown"></select>
+        <button class="search-button">Go</button>
+      </div>
+    </div>
   </div>
-  <div class="upcoming-bookings"></div>
+  <div class="bookings-container"></div>
   <!-- Do not include the scripts.js or class files here - it is done by the webpack server -->
   <script src="bundle.js"></script>
 
