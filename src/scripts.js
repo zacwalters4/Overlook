@@ -3,6 +3,7 @@ import { getData } from './apiCalls'
 import './css/styles.css'
 import './images/turing-logo.png'
 import User from '../src/classes/User'
+import Room from '../src/classes/Room'
 
 // DATA MODEL
 
@@ -36,7 +37,8 @@ function initializeData(customerURL, bookingsURL, roomsURL) {
         .then(data => {
             customer = data[0]
             bookings = data[1].bookings
-            rooms = data[2].rooms
+            rooms = instantiateRooms(data[2].rooms, bookings)
+            console.log(rooms)
             initializePage()
         })
         .catch(error => {
@@ -202,7 +204,10 @@ function checkRoomAvailability(date) {
         return bookingDate.getTime() === date.getTime()
     })
     console.log(dateBookings)
+}
 
-    
-
+function instantiateRooms(roomsArray) {
+    return roomsArray.map(room => {
+        return new Room(room, bookings)
+    })
 }
