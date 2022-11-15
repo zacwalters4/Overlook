@@ -13,8 +13,6 @@ class User {
         return userBookings.map(booking => {
             return new Booking(booking, allRooms)
         })
-        console.log(userBookings)
-        return userBookings
     }
 
     getPastBookings() {
@@ -33,7 +31,7 @@ class User {
         return upcomingBookings
     }
 
-    getTotalSpent(allRooms) {
+    getTotalSpent() {
         let totalSpent = 0
         this.bookings.forEach(booking => {
             totalSpent += booking.cost

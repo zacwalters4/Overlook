@@ -7,15 +7,22 @@
   <title>Overlook</title>
 </head>
 <body>
+  <h1 class="welcome-message">Hello</h1>
   <div class="button-container">
     <button class="upcoming-button">Upcoming Bookings</button>
     <button class="past-button">Past Bookings</button>
+    <button class="new-button">New Booking</button>
   </div>
-  <div class="bookings-container">
-    <div class="booking">
+  <div class="date-select-container hidden">
+    <h1>Book a Room:</h1>
+    <div class="dropdown-container">
+      <select id="year-dropdown"></select>
+      <select id="month-dropdown"></select>
+      <select id="date-dropdown"></select>
+      <button class="search-button">Go</button>
     </div>
   </div>
-  <div class="upcoming-bookings"></div>
+  <div class="bookings-container"></div>
   <!-- Do not include the scripts.js or class files here - it is done by the webpack server -->
   <script src="bundle.js"></script>
 

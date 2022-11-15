@@ -12,6 +12,11 @@ body {
   height: 100vh;
 }
 
+.welcome-message {
+  width: 60vw;
+  margin-bottom: 5vh;
+}
+
 .button-container {
   width:60vw;
 }
