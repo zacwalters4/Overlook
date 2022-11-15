@@ -36,8 +36,20 @@ body {
   width: 30vw;
 }
 
-.date-select-container > h1 {
-  font-size: 100%;
+.dropdown-container {
+  width: 24vw;
+}
+
+select {
+  width: 5vw;
+}
+
+.dropdown-container > button {
+  width: 5vw;
+}
+
+.date-select-container > label {
+  font-size: 80%;
 }
 
 .bookings-container {
@@ -62,6 +74,15 @@ margin-left: 3%;
 font-size: 100%;
 }
 
+.new > h1 {
+  width: 25%;
+  font-size: 90%;
+}
+
 .hidden {
   display:none;
+}
+
+#filter-dropdown {
+  width: 8vw;
 }

@@ -1,5 +1,5 @@
 import './apiCalls'
-import { getData } from './apiCalls'
+import { getData, postData } from './apiCalls'
 import './css/styles.css'
 import './images/turing-logo.png'
 import User from '../src/classes/User'
@@ -12,9 +12,11 @@ const currentCustomerURL = 'http://localhost:3001/api/v1/customers/1'
 const allBookingsURL = 'http://localhost:3001/api/v1/bookings'
 const allRoomsURL = 'http://localhost:3001/api/v1/rooms'
 
+let day, month, year
 let customer
 let bookings
 let rooms
+let allRooms
 let user
 
 // QUERY SELECTORS
@@ -29,6 +31,8 @@ const dateDropdown = document.getElementById('date-dropdown')
 const newBookingButton = document.querySelector('.new-button')
 const searchButton = document.querySelector('.search-button')
 const dateSelectContainer = document.querySelector('.date-select-container')
+const filterDropdown = document.getElementById('filter-dropdown')
+const filterContainer = document.querySelector('.filter-container')
 
 // UTILITY FUNCTIONS
 
@@ -37,8 +41,7 @@ function initializeData(customerURL, bookingsURL, roomsURL) {
         .then(data => {
             customer = data[0]
             bookings = data[1].bookings
-            rooms = instantiateRooms(data[2].rooms, bookings)
-            console.log(rooms)
+            allRooms = data[2].rooms
             initializePage()
         })
         .catch(error => {
@@ -47,6 +50,7 @@ function initializeData(customerURL, bookingsURL, roomsURL) {
 }
 
 function initializePage() {
+    rooms = instantiateRooms(allRooms, bookings)
     initializeUser()
     updateUpcomingBookings()
     updateWelcomeMessage()
@@ -55,7 +59,6 @@ function initializePage() {
 
 function initializeUser() {
     user = new User(customer, bookings, rooms)
-    console.log(user)
 }
 
 // EVENT LISTENERS
@@ -64,13 +67,24 @@ window.addEventListener('load', () => {
     initializeData(currentCustomerURL, allBookingsURL, allRoomsURL)
 })
 
+bookingsContainer.addEventListener('click', event => {
+    if(event.target.classList.value === 'new-booking-button') {
+        let newBooking = bookRoom(event)
+        postData(newBooking, allBookingsURL)
+            .then(() => fetchBookings())
+    }
+})
+
 upcomingButton.addEventListener('click', updateUpcomingBookings)
 pastButton.addEventListener('click', updatePastBookings)
 newBookingButton.addEventListener('click', loadNewBookingPage)
 
 yearDropdown.addEventListener('change', fillDateDropdown)
 monthDropdown.addEventListener('change', fillDateDropdown)
+filterDropdown.addEventListener('change', filterRooms)
+
 searchButton.addEventListener('click', searchAvailableRooms)
+
 // DOM UPDATING
 
 function updateWelcomeMessage() {
@@ -92,7 +106,7 @@ function updatePastBookings() {
             </div>
         `
     })
-    dateSelectContainer.classList.add('hidden')
+    hideNewBookingElements()
 }
 
 function updateUpcomingBookings() {
@@ -110,11 +124,19 @@ function updateUpcomingBookings() {
             </div>
         `
     })
+    hideNewBookingElements()
+}
+
+function hideNewBookingElements() {
     dateSelectContainer.classList.add('hidden')
+    filterContainer.classList.add('hidden')
+    bookingsContainer.classList.remove('new')
 }
 
 function loadNewBookingPage() {
     dateSelectContainer.classList.remove('hidden')
+    filterContainer.classList.remove('hidden')
+    bookingsContainer.classList.add('new')
     bookingsContainer.innerHTML = `
         <div class="booking">
             <h1>Available Rooms</h1>
@@ -127,6 +149,7 @@ function fillDropdowns() {
     fillYearDropdown()
     fillMonthDropdown()
     fillDateDropdown()
+    fillFilter()
 }
 
 function fillYearDropdown() {
@@ -166,48 +189,108 @@ function fillDateDropdown() {
 }
 
 function searchAvailableRooms() {
-    let day, month, year
     day = dateDropdown.value
     month = monthDropdown.value
     year = yearDropdown.value
+
     let dateInput = getDateInput(day, month, year)
-    checkRoomAvailability(dateInput)
+    displayAvailableRooms(checkRoomAvailability(dateInput))
+}
+
+function displayAvailableRooms(availableRooms) {
     bookingsContainer.innerHTML = `
         <div class="booking">
             <h1>Available Rooms for ${year}/${month + 1}/${day}</h1>
         </div>
     `
-    
-}
-
-function displayAvailableRooms() {
-    availableRooms.forEach(room => {
+    if(typeof availableRooms === 'string') {
         bookingsContainer.innerHTML += `
-            <div class="booking">
-                <h1>Room ${room.number} - ${room.roomType}</h1>
-                <h1>${room.numBeds} ${room.bedSize} beds</h1>
-                <h1>$${room.costPerNight} per night</h1>
-            </div>
-        `
-    })
+        <div class="booking">
+            <h1>You can not book a room in the past!</h1>
+        </div>
+    `
+    } else if(availableRooms[0]) {
+        availableRooms.forEach(room => {
+            bookingsContainer.innerHTML += `
+                <div class="booking new">
+                    <h1>Room ${room.number} - ${room.roomType}</h1>
+                    <h1>${room.numBeds} ${room.bedSize} beds</h1>
+                    <h1>$${room.costPerNight} per night</h1>
+                    <button class="new-booking-button" id="${room.number}">Book This Room</button>
+                </div>
+            `
+        })
+    }
+    else {
+        bookingsContainer.innerHTML += `
+        <div class="booking">
+            <h1>Our apologies! All of our rooms are full on this date.</h1>
+        </div>
+    `
+    }
 }
 
 function getDateInput(day, month, year) {
     const dateInput = new Date(year, month, day)
-    console.log(dateInput)
     return dateInput
 }
 
 function checkRoomAvailability(date) {
-    const dateBookings = bookings.filter(booking => {
-        let bookingDate = new Date(booking.date)
-        return bookingDate.getTime() === date.getTime()
+    if(date < Date.now()){
+        return 'Sorry, you can not book a date in the past.'
+    }
+    const availableRooms = rooms.filter(room => {
+        return room.isAvailable(date)
     })
-    console.log(dateBookings)
-}
+    return availableRooms
+}   
 
 function instantiateRooms(roomsArray) {
     return roomsArray.map(room => {
         return new Room(room, bookings)
     })
 }
+
+function fillFilter() {
+    filterDropdown.innerHTML = ''
+    const roomTypes = ["none","residential suite","suite","single room","junior suite"]
+    roomTypes.forEach(type => {
+        const option = document.createElement('OPTION')
+        option.innerHTML = type
+        option.value = type
+        filterDropdown.append(option)
+    })
+}
+
+function filterRooms() {
+    let dateInput = getDateInput(day, month, year)
+    const filteredRooms = checkRoomAvailability(dateInput).filter(room => {
+        return room.roomType === filterDropdown.value
+    })
+    displayAvailableRooms(filteredRooms)
+}
+function bookRoom(event) {
+    let userID = user.id
+    let date = `${year}/${month + 1}/${day}`
+    let roomNumber = parseInt(event.target.id)
+    alert(`You booked room ${roomNumber} for ${date}!`)
+    return buildPost(userID, date, roomNumber)
+}
+
+function buildPost(userID, date, roomNumber) {
+    return {
+        userID: userID,
+        date: date,
+        roomNumber: roomNumber
+    }
+}
+
+function fetchBookings() {
+    fetch(allBookingsURL)
+      .then(response => response.json())
+      .then(data => bookings = data.bookings)
+      .then(() => {
+        initializePage()
+      })
+      .catch(err => console.log(err))
+  }

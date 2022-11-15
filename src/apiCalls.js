@@ -6,4 +6,14 @@ function getData(url) {
         })
 }
 
-export { getData }
+function postData(body, url) {
+    return fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  }
+
+export { getData, postData }
