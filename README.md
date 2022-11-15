@@ -1,11 +1,10 @@
 # Overlook Project
 
-### Preview
-
-
-
 ### Abstract
 The overlook project is a hotel management tool that allows the user to see their current and past bookings, as well as view available hotel rooms and make a booking on their chosen date.
+
+### Preview
+![Overlook-preview](https://user-images.githubusercontent.com/22826695/202033632-c920c7e6-57d1-476d-aa07-73ff7de5d1b7.gif)
 
 
 ### Contributors
