@@ -13,7 +13,7 @@
     <button class="past-button">Past Bookings</button>
     <button class="new-button">New Booking</button>
     <div class="date-select-container hidden">
-      <h1>Select a Date:</h1>
+      <label for="dropdown-container">Select a Date:</label>
       <div class="dropdown-container">
         <select id="year-dropdown"></select>
         <select id="month-dropdown"></select>
@@ -23,6 +23,10 @@
     </div>
   </div>
   <div class="bookings-container"></div>
+  <div class="filter-container hidden">
+    <label for="filter-dropdown">Filter by Type:</label>
+    <select id="filter-dropdown"></select>
+  </div>
   <!-- Do not include the scripts.js or class files here - it is done by the webpack server -->
   <script src="bundle.js"></script>
 

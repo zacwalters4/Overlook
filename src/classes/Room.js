@@ -21,6 +21,7 @@ class Room {
     }
 
     isAvailable(date) {
+
         const todayArray = this.daysBooked.filter(indexDate => {
             let dateCheck = new Date(indexDate)
             return dateCheck.getTime() === date.getTime()
