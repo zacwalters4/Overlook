@@ -6,7 +6,7 @@ import User from '../src/classes/User'
 describe('User', () => {
     let user
     beforeEach(() => {
-      user = new User(userData, bookingsData, roomsData)
+      user = new User(userData[0], bookingsData, roomsData)
     })
 
   it('should be an instance of User', () => {
