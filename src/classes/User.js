@@ -18,6 +18,9 @@ class User {
     getPastBookings() {
         const pastBookings = this.bookings.filter(booking => {
             let bookingDate = new Date(booking.date)
+            console.log(bookingDate.getDate())
+            bookingDate.setDate(bookingDate.getDate()+1)
+            console.log(bookingDate.getDate())
             return (bookingDate < Date.now())
         })
         return pastBookings
@@ -26,13 +29,14 @@ class User {
     getUpcomingBookings() {
         const upcomingBookings = this.bookings.filter(booking => {
             let bookingDate = new Date(booking.date)
+            bookingDate.setDate(bookingDate.getDate()+1)
             return (bookingDate > Date.now())
         })
         return upcomingBookings
     }
 
     getTotalSpent() {
-        let totalSpent = 0
+        let totalSpent = 0.00
         this.bookings.forEach(booking => {
             totalSpent += booking.cost
         })
