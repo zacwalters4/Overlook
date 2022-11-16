@@ -67,20 +67,17 @@ function initializePage() {
     initializeUser()
     updateUpcomingBookings()
     updateWelcomeMessage()
-    fillDropdowns()
 }
 
 function initializeUser() {
-    console.log(id)
-    console.log(allCustomers[id - 1], bookings, rooms)
     user = new User(allCustomers[id - 1], bookings, rooms)
-    console.log(user)
 }
 
 // EVENT LISTENERS
 
 window.addEventListener('load', () => {
     initializeData(allCustomersURL, allBookingsURL, allRoomsURL)
+    fillDropdowns()
 })
 
 bookingsContainer.addEventListener('click', event => {
@@ -103,7 +100,7 @@ loginButton.addEventListener('click', attemptLogin)
 // DOM UPDATING
 
 function updateWelcomeMessage() {
-    welcomeMessage.innerText = `Hello ${user.name}!`
+    welcomeMessage.innerText = `Hello ${user.name}! You've spent $${user.getTotalSpent()}`
 }
 
 function updatePastBookings() {
@@ -157,7 +154,6 @@ function loadNewBookingPage() {
             <h1>Available Rooms</h1>
         </div>
     `
-    fillDropdowns()
 }
 
 function fillDropdowns() {
@@ -179,7 +175,7 @@ function fillYearDropdown() {
 
 function fillMonthDropdown() {
     const months = ["January","February","March","April","May","June","July","August","September","October","November","December",]
-    let monthValue = 0
+    let monthValue = 1
     months.forEach(month => {
         const option = document.createElement('OPTION')
         option.innerHTML = month
@@ -204,7 +200,7 @@ function fillDateDropdown() {
 }
 
 function searchAvailableRooms() {
-    day = dateDropdown.value
+    day = parseInt(dateDropdown.value)
     month = monthDropdown.value
     year = yearDropdown.value
 
@@ -215,7 +211,7 @@ function searchAvailableRooms() {
 function displayAvailableRooms(availableRooms) {
     bookingsContainer.innerHTML = `
         <div tabindex="0" class="booking">
-            <h1>Available Rooms for ${year}/${month + 1}/${day}</h1>
+            <h1>Available Rooms for ${year}/${month}/${day}</h1>
         </div>
     `
     if(typeof availableRooms === 'string') {
@@ -246,18 +242,18 @@ function displayAvailableRooms(availableRooms) {
 }
 
 function getDateInput(day, month, year) {
-    const dateInput = new Date(year, month, day)
+    const dateInput = new Date(year, month - 1, day + 1)
     return dateInput
 }
 
 function checkRoomAvailability(date) {
-    if(date < Date.now()){
-        return 'Sorry, you can not book a date in the past.'
+    if(date >= Date.now()){
+        const availableRooms = rooms.filter(room => {
+            return room.isAvailable(date)
+        })
+        return availableRooms
     }
-    const availableRooms = rooms.filter(room => {
-        return room.isAvailable(date)
-    })
-    return availableRooms
+    return 'Sorry, you can not book a date in the past.'
 }   
 
 function instantiateRooms(roomsArray) {
@@ -286,7 +282,7 @@ function filterRooms() {
 }
 function bookRoom(event) {
     let userID = user.id
-    let date = `${year}/${month + 1}/${day}`
+    let date = `${year}/${month}/${day}`
     let roomNumber = parseInt(event.target.id)
     alert(`You booked room ${roomNumber} for ${date}!`)
     return buildPost(userID, date, roomNumber)
@@ -315,7 +311,6 @@ function fetchBookings() {
         passFailText.innerText = 'We do not recognize your login credentials, please try again.'
     } else {
         passFailText.innerText = ''
-        console.log(5)
         id = login.checkLogin(usernameField.value, passwordField.value)
         initializePage()
         loginContainer.classList.add('hidden')
